@@ -1,0 +1,207 @@
+/* Define CSS Variables for Light and Dark Modes */
+:root {
+    --background: #fefefe; /* Brighter near-white for body */
+    --text-color: #1a1a1a; /* Slightly darker text for contrast */
+    --header-bg: #e74c3c; /* Keep red for header */
+    --header-text: #fff;
+    --section-bg: #fff; /* Pure white sections */
+    --border-color: #ccc; /* Slightly darker borders for definition */
+    --button-bg: #e74c3c; /* Keep red for buttons */
+    --button-text: #fff;
+    --input-bg: #f0f8ff; /* Brighter "alice blue" for inputs */
+    --table-border: #ccc; /* Match borders */
+    --table-header-bg: #f9f9f9; /* Brighter table header */
+    --link-color: #e74c3c;
+}
+
+/* Dark Mode Variables (Unchanged) */
+body.dark-mode {
+    --background: #1a1a1a;
+    --text-color: #e0e0e0;
+    --header-bg: #000;
+    --header-text: #e0e0e0;
+    --section-bg: #2c2c2c;
+    --border-color: #444;
+    --button-bg: #000;
+    --button-text: #e0e0e0;
+    --input-bg: #3a3a3a;
+    --table-border: #444;
+    --table-header-bg: #333;
+    --link-color: #ff6b6b;
+}
+
+/* General Styles */
+body {
+    font-family: Arial, sans-serif;
+    margin: 0;
+    padding: 0;
+    background: var(--background);
+    color: var(--text-color);
+    transition: background 0.3s, color 0.3s;
+}
+
+header {
+    background: var(--header-bg);
+    color: var(--header-text);
+    padding: 1rem;
+    text-align: center;
+    position: relative;
+    transition: background 0.3s, color 0.3s;
+}
+
+#dark-mode-toggle {
+    position: absolute;
+    top: 1rem;
+    right: 1rem;
+    background: var(--button-bg);
+    color: var(--button-text);
+    border: none;
+    padding: 0.5rem 1rem;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 1rem;
+    transition: background 0.3s, color 0.3s;
+}
+
+#dark-mode-toggle:hover {
+    opacity: 0.9;
+}
+
+.container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 1rem;
+}
+
+section {
+    background: var(--section-bg);
+    border: 1px solid var(--border-color);
+    border-radius: 5px;
+    padding: 1rem;
+    margin-bottom: 1rem;
+    transition: background 0.3s, border 0.3s;
+}
+
+h2, h3 {
+    color: var(--text-color);
+    transition: color 0.3s;
+}
+
+h2 i, h3 i {
+    margin-right: 0.5rem;
+}
+
+form {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+}
+
+label {
+    font-weight: bold;
+}
+
+input, select, textarea {
+    padding: 0.5rem;
+    border: 1px solid var(--border-color);
+    border-radius: 5px;
+    background: var(--input-bg);
+    color: var(--text-color);
+    transition: background 0.3s, color 0.3s, border 0.3s;
+}
+
+button {
+    background: var(--button-bg);
+    color: var(--button-text);
+    border: none;
+    padding: 0.5rem 1rem;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 1rem;
+    transition: background 0.3s, color 0.3s;
+}
+
+button:hover {
+    opacity: 0.9;
+}
+
+table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 1rem;
+}
+
+th, td {
+    padding: 0.5rem;
+    border: 1px solid var(--table-border);
+    text-align: left;
+    transition: border 0.3s;
+}
+
+th {
+    background: var(--table-header-bg);
+    transition: background 0.3s;
+}
+
+ul {
+    list-style: none;
+    padding: 0;
+}
+
+li {
+    padding: 0.5rem 0;
+}
+
+a {
+    color: var(--link-color);
+    text-decoration: none;
+    transition: color 0.3s;
+}
+
+a:hover {
+    text-decoration: underline;
+}
+
+footer {
+    text-align: center;
+    padding: 1rem;
+    background: var(--header-bg);
+    color: var(--header-text);
+    position: relative;
+    bottom: 0;
+    width: 100%;
+    transition: background 0.3s, color 0.3s;
+}
+
+#login-section {
+    display: flex;
+    gap: 2rem;
+    flex-wrap: wrap;
+}
+
+#employee-login, #hr-login {
+    flex: 1;
+    min-width: 300px;
+}
+
+#employee-main, #hr-main {
+    display: none;
+}
+
+@media (max-width: 600px) {
+    #login-section {
+        flex-direction: column;
+        gap: 1rem;
+    }
+}
+
+.sr-only {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    padding: 0;
+    margin: -1px;
+    overflow: hidden;
+    clip: rect(0, 0, 0, 0);
+    border: 0;
+}

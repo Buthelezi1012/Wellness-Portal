@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="author" content="Nqobile Buthelezi"> 
+    <title>Wellness Portal Monitor</title>
+    <link rel="stylesheet" href="styles.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-database.js"></script>
+</head>
+<body>
+    <header>
+        <h1>Wellness Portal Monitor</h1>
+        <button id="dark-mode-toggle" aria-label="Toggle dark mode">
+            <i class="fas fa-moon"></i> Dark Mode
+        </button>
+    </header>
+    <div class="container">
+        <section id="monitor-section">
+            <h2>System Health</h2>
+            <p id="status-message">Checking...</p>
+            <h3>Recent Stress Logs</h3>
+            <table id="monitor-stress-table">
+                <thead>
+                    <tr>
+                        <th>Employee</th>
+                        <th>Time</th>
+                        <th>Stress Level</th>
+                    </tr>
+                </thead>
+                <tbody id="monitor-stress-table-body"></tbody>
+            </table>
+            <h3>Team Mood</h3>
+            <p id="mood-summary"></p>
+        </section>
+    </div>
+    <footer>
+        <p>Created by Nqobile Buthelezi © 2025</p> 
+    </footer>
+    <script>
+        const firebaseConfig = {
+            apiKey: "AIzaSyAJB0GeoDHfZ1SiXVybf9ZEqx5PQZfA1tI",
+            authDomain: "wellness-portal-58a42.firebaseapp.com",
+            databaseURL: "https://wellness-portal-58a42-default-rtdb.europe-west1.firebasedatabase.app",
+            projectId: "wellness-portal-58a42",
+            storageBucket: "wellness-portal-58a42.firebasestorage.app",
+            messagingSenderId: "818310041574",
+            appId: "1:818310041574:web:71617736907b5a1e8ed027"
+        };
+        firebase.initializeApp(firebaseConfig);
+        const db = firebase.database();
+
+        // Dark Mode Toggle
+        function toggleDarkMode() {
+            const body = document.body;
+            const isDarkMode = body.classList.toggle('dark-mode');
+            const toggleButton = document.getElementById('dark-mode-toggle');
+            toggleButton.innerHTML = isDarkMode 
+                ? '<i class="fas fa-sun"></i> Light Mode'
+                : '<i class="fas fa-moon"></i> Dark Mode';
+            localStorage.setItem('darkMode', isDarkMode ? 'enabled' : 'disabled');
+        }
+
+        // Load dark mode preference
+        if (localStorage.getItem('darkMode') === 'enabled') {
+            document.body.classList.add('dark-mode');
+            document.getElementById('dark-mode-toggle').innerHTML = '<i class="fas fa-sun"></i> Light Mode';
+        }
+        document.getElementById('dark-mode-toggle').addEventListener('click', toggleDarkMode);
+
+        function formatTimestamp(date) {
+            const month = date.getMonth() + 1;
+            const day = date.getDate();
+            const hours = date.getHours() % 12 || 12;
+            const minutes = String(date.getMinutes()).padStart(2, '0');
+            const ampm = date.getHours() >= 12 ? 'PM' : 'AM';
+            return `${month}/${day} ${hours}:${minutes} ${ampm}`;
+        }
+
+        db.ref('stressLogs').once('value', snapshot => {
+            const logsData = snapshot.val() || {};
+            const allLogs = [];
+            for (let employee in logsData) {
+                const logs = logsData[employee];
+                for (let logId in logs) {
+                    allLogs.push({
+                        employee,
+                        timestamp: new Date(logs[logId].timestamp),
+                        stressLevel: logs[logId].stressLevel
+                    });
+                }
+            }
+
+            allLogs.sort((a, b) => b.timestamp - a.timestamp);
+            const recentLogs = allLogs.slice(0, 5);
+            const tbody = document.getElementById('monitor-stress-table-body');
+            tbody.innerHTML = '';
+            recentLogs.forEach(log => {
+                const row = document.createElement('tr');
+                row.innerHTML = `
+                    <td>${log.employee}</td>
+                    <td>${formatTimestamp(log.timestamp)}</td>
+                    <td>${log.stressLevel}/10</td>
+                `;
+                tbody.appendChild(row);
+            });
+
+            document.getElementById('status-message').textContent = allLogs.length > 0 ? 
+                'System is operational. Recent logs detected.' : 
+                'No logs yet—system is up but awaiting data.';
+        });
+
+        db.ref('moods').once('value', snapshot => {
+            const moods = snapshot.val() ? Object.values(snapshot.val()) : [];
+            const moodCounts = { sunny: 0, cloudy: 0, stormy: 0, rainy: 0 };
+            moods.forEach(entry => moodCounts[entry.mood]++);
+            const total = moods.length;
+            const summary = total > 0 ? 
+                `Sunny: ${moodCounts.sunny}, Cloudy: ${moodCounts.cloudy}, Stormy: ${moodCounts.stormy}, Rainy: ${moodCounts.rainy}` : 
+                'No mood data yet.';
+            document.getElementById('mood-summary').textContent = summary;
+        });
+    </script>
+</body>
+</html>
